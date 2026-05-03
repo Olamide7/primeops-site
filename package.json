@@ -1,22 +1,41 @@
 {
-  "name": "bookedsolid-systems",
+  "name": "primeops",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server/proxy.js",
+    "start": "node server/proxy.js",
+    "dev:frontend": "vite",
+    "build": "tsc && vite build",
+    "netlify:dev": "netlify dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@mojojoejo/vite-plugin-purgecss": "^1.1.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "node-fetch": "^3.3.2"
+    "express-rate-limit": "^8.2.1",
+    "framer-motion": "^12.38.0",
+    "node-fetch": "^3.3.2",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
   }
 }
