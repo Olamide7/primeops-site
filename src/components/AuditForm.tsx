@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const WEBHOOK_URL = 'https://uthmantex87.app.n8n.cloud/webhook/audit-submission';
 
 // ── Types ─────────────────────────────────────────────────────
 interface FormData {
@@ -118,7 +119,7 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
           if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Africa/Lagos') {
             setBudgetOptions(BUDGET_OPTIONS_NGN);
           }
-        } catch (e) {}
+        } catch (e) { }
       });
   }, []);
 
@@ -188,14 +189,13 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
     console.log('📤 Payload:', payload);
 
     try {
-      const response = await fetch('/api/submit', {
+      await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
-      console.log('✅ Success:', result);
+      console.log('✅ Success:');
 
     } catch (err) {
       console.error('❌ Failed:', err);
