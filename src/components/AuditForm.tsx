@@ -145,8 +145,6 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
     setStep((s) => Math.max(s - 1, 1));
   };
 
-  const WEBHOOK_URL = 'https://uthmantex87.app.n8n.cloud/webhook/audit-submission';
-
   const handleSubmit = async () => {
     console.log('🔒 Starting form submission...');
 
