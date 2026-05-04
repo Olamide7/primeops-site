@@ -145,6 +145,8 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
     setStep((s) => Math.max(s - 1, 1));
   };
 
+  const WEBHOOK_URL = 'https://uthmantex87.app.n8n.cloud/webhook/audit-submission';
+
   const handleSubmit = async () => {
     console.log('🔒 Starting form submission...');
 
@@ -161,32 +163,26 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
       status: 'New',
     };
 
-    console.log('📤 Payload created:', payload);
+    console.log('📤 Payload:', payload);
 
-    if (WEBHOOK_URL) {
-      try {
-        console.log('🚀 Sending to n8n webhook...');
+    try {
+      console.log('🚀 Firing webhook...');
 
-        const response = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          mode: 'no-cors',
-          body: JSON.stringify(payload),
-        });
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        body: JSON.stringify(payload),
+      });
 
-        console.log('✅ n8n response status:', response.status);
+      // no-cors always returns opaque response — if we got here, it fired
+      console.log('✅ Webhook fired successfully');
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('n8n error response:', errorText);
-        }
-      } catch (err) {
-        console.error('❌ Webhook POST failed:', err);
-      }
-    } else {
-      console.warn('⚠️ No webhook configured');
+    } catch (err) {
+      console.error('❌ Webhook failed:', err);
     }
 
+    // Always advance to thank you — don't block on webhook response
     onSubmit?.(payload);
     setDirection(1);
     setStep(5);
