@@ -1,11 +1,10 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  functions = "server/netlify/functions"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/submit"
+  to = "/.netlify/functions/submit"
   status = 200
 
 # SPA fallback — serve index.html for all client-side routes

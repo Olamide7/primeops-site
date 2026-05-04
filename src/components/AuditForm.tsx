@@ -1,8 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ── n8n Webhook Stub ──────────────────────────────────────────
-const WEBHOOK_URL = 'https://uthmantex87.app.n8n.cloud/webhook/audit-submission';
 
 // ── Types ─────────────────────────────────────────────────────
 interface FormData {
@@ -61,11 +59,18 @@ const SERVICE_OPTIONS = [
   },
 ];
 
-const BUDGET_OPTIONS = [
+const BUDGET_OPTIONS_USD = [
   'Under $500',
   '$500–$1,500',
   '$1,500–$5,000',
   '$5,000+',
+];
+
+const BUDGET_OPTIONS_NGN = [
+  'Under ₦750,000',
+  '₦750,000–₦2,000,000',
+  '₦2,000,000–₦5,000,000',
+  '₦5,000,000+',
 ];
 
 const STEP_LABELS = ['Foundation', 'Infrastructure', 'Signal', 'Wildcard'];
@@ -97,6 +102,25 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [budgetOptions, setBudgetOptions] = useState<string[]>(BUDGET_OPTIONS_USD);
+
+  useEffect(() => {
+    fetch('https://ipapi.co/json/')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.country_code === 'NG') {
+          setBudgetOptions(BUDGET_OPTIONS_NGN);
+        }
+      })
+      .catch(() => {
+        // Fallback to timezone if API is blocked (e.g. adblocker)
+        try {
+          if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Africa/Lagos') {
+            setBudgetOptions(BUDGET_OPTIONS_NGN);
+          }
+        } catch (e) {}
+      });
+  }, []);
 
   const update = useCallback(
     (field: keyof FormData, value: string) => {
@@ -164,35 +188,24 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
     console.log('📤 Payload:', payload);
 
     try {
-      console.log('🚀 Firing webhook...');
-
-      await fetch(WEBHOOK_URL, {
+      const response = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        mode: 'no-cors',
         body: JSON.stringify(payload),
       });
 
-      // no-cors always returns opaque response — if we got here, it fired
-      console.log('✅ Webhook fired successfully');
+      const result = await response.json();
+      console.log('✅ Success:', result);
 
     } catch (err) {
-      console.error('❌ Webhook failed:', err);
+      console.error('❌ Failed:', err);
     }
 
-    // Always advance to thank you — don't block on webhook response
     onSubmit?.(payload);
     setDirection(1);
     setStep(5);
   };
 
-
-  // ── WhatsApp link builder ───────────────────────────────────
-  const whatsappUrl = () => {
-    const customPart = form.custom_requests.trim() || 'none';
-    const msg = `Hi, I just completed the Digital Infrastructure Audit for ${form.company_name}. I'm interested in ${form.service_interest} and have a custom request: ${customPart}.`;
-    return `https://wa.me/2347057299091?text=${encodeURIComponent(msg)}`;
-  };
 
   // ── Render helpers ──────────────────────────────────────────
   const renderProgressBar = () => (
@@ -343,7 +356,7 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
       <div className="audit-field-group">
         <label className="audit-label">Monthly budget range *</label>
         <div className="audit-cards-grid audit-cards-4">
-          {BUDGET_OPTIONS.map((b) => (
+          {budgetOptions.map((b) => (
             <button
               key={b}
               type="button"
@@ -459,19 +472,7 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
         </div>
       </div>
 
-      {/* WhatsApp CTA */}
-      <a
-        href={whatsappUrl()}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="audit-whatsapp-btn"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-        </svg>
-        Open Your Priority WhatsApp Channel →
-      </a>
-      <p className="audit-unique-text">This link is unique to your submission.</p>
+
     </div>
   );
 
