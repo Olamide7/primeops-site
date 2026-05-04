@@ -146,6 +146,8 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
   };
 
   const handleSubmit = async () => {
+    console.log('🔒 Starting form submission...');
+
     const payload = {
       timestamp: new Date().toISOString(),
       company_name: form.company_name,
@@ -159,24 +161,37 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
       status: 'New',
     };
 
+    console.log('📤 Payload created:', payload);
+
     if (WEBHOOK_URL) {
       try {
-        await fetch(WEBHOOK_URL, {
+        console.log('🚀 Sending to n8n webhook...');
+
+        const response = await fetch(WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          mode: 'no-cors',
           body: JSON.stringify(payload),
         });
+
+        console.log('✅ n8n response status:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('n8n error response:', errorText);
+        }
       } catch (err) {
-        console.error('Webhook POST failed:', err);
+        console.error('❌ Webhook POST failed:', err);
       }
     } else {
-      console.log('📋 Audit form submitted (no webhook configured):', payload);
+      console.warn('⚠️ No webhook configured');
     }
 
     onSubmit?.(payload);
     setDirection(1);
     setStep(5);
   };
+
 
   // ── WhatsApp link builder ───────────────────────────────────
   const whatsappUrl = () => {
