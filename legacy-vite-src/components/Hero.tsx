@@ -97,7 +97,8 @@ export const Hero: React.FC = () => {
               transition={{ duration: 0.6 }}
               className="heading-xl hero-title"
             >
-              We build websites that convert, automate your workflows, and add AI reception systems that help you capture more leads.
+              Scale. Automate.<br />
+              <em className="teal">Engineer Growth.</em>
             </motion.h1>
 
             <motion.p 
@@ -106,8 +107,7 @@ export const Hero: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="hero-sub"
             >
-              Get a premium, high-converting website as your foundation, then supercharge it 
-              with AI call handling and backend automation to stop losing leads.
+              We engineer the digital infrastructure ambitious B2B companies need to scale — from high-performance websites to 24/7 AI-powered receptionists and workflow automations.
             </motion.p>
 
             <motion.div 
@@ -116,14 +116,14 @@ export const Hero: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="hero-actions"
             >
-              <a href="#pricing" className="btn-primary">
-                View Pricing
+              <Link to="/audit" className="btn-primary">
+                Book Your Free Audit
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
-              </a>
-              <Link to="/audit" className="btn-ghost">
-                Start Your Audit
+              </Link>
+              <Link to="/services" className="btn-ghost">
+                Explore Services
               </Link>
             </motion.div>
 

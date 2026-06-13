@@ -454,7 +454,7 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
       </div>
 
       <h2 className="audit-heading">Your audit is queued.</h2>
-      <p className="audit-subheading">We've received your infrastructure brief. Now, let's talk.</p>
+      <p className="audit-subheading">We've received your infrastructure brief. Let's schedule a live session to walk through your roadmap.</p>
 
       {/* Summary card */}
       <div className="audit-summary-card">
@@ -470,6 +470,15 @@ const AuditForm: React.FC<{ onSubmit?: (data: Record<string, string>) => void }>
           <span className="audit-summary-key">Budget</span>
           <span className="audit-summary-val">{form.budget_range}</span>
         </div>
+      </div>
+
+      <div className="audit-thankyou-actions" style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '32px', flexWrap: 'wrap' }}>
+        <a href="https://calendly.com/primeops-agency/audit" target="_blank" rel="noopener noreferrer" className="btn-primary">
+          Book Calendar Session
+        </a>
+        <a href="https://wa.me/2348000000000?text=Hi!%20I%20just%20completed%20the%20audit%20form." target="_blank" rel="noopener noreferrer" className="btn-whatsapp">
+          Chat with an Engineer
+        </a>
       </div>
 
 

@@ -1,17 +1,9 @@
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = ".next"
 
-[[redirects]]
-  from = "/api/submit"
-  to = "/.netlify/functions/submit"
-  status = 200
-
-# SPA fallback — serve index.html for all client-side routes
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[headers]]
   for = "/*"
@@ -20,9 +12,9 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://uthmantex87.app.n8n.cloud https://ipapi.co https://region1.google-analytics.com https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:"
+    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://uthmantex87.app.n8n.cloud https://wa.me; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
 
 [[headers]]
-  for = "/assets/*"
+  for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"

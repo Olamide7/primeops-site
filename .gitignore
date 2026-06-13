@@ -15,4 +15,6 @@ Thumbs.db
 
 # Build outputs
 dist/
+.next/
 .netlify/
+tsconfig.tsbuildinfo
